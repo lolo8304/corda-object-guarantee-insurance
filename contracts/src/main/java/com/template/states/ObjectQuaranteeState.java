@@ -1,25 +1,85 @@
 package com.template.states;
 
-import com.template.contracts.TemplateContract;
+import com.template.contracts.ObjectGuaranteeContract;
 import net.corda.core.contracts.BelongsToContract;
-import net.corda.core.contracts.ContractState;
+import net.corda.core.contracts.LinearState;
+import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
+import net.corda.core.identity.Party;
+import org.jetbrains.annotations.NotNull;
 
+import java.security.PublicKey;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 // *********
 // * State *
 // *********
-@BelongsToContract(TemplateContract.class)
-public class TemplateState implements ContractState {
+@BelongsToContract(ObjectGuaranteeContract.class)
+public class ObjectQuaranteeState implements LinearState {
 
-    public TemplateState() {
+    private final String objectID;
+    private final String title;
+    private Instant purchaseDate;
+    private int price;
+    private int additionalYears;
+    private Party issues;
+    private Party insurance;
 
+    public ObjectQuaranteeState(String objectID, String title, Instant purchaseDate, int price, int additionalYears, Party issues, Party insurance) {
+
+        this.objectID = objectID;
+        this.title = title;
+        this.purchaseDate = purchaseDate;
+        this.price = price;
+        this.additionalYears = additionalYears;
+        this.issues = issues;
+        this.insurance = insurance;
+    }
+
+
+    public String getObjectID() {
+        return objectID;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Instant getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public int getAdditionalYears() {
+        return additionalYears;
+    }
+
+    public Party getIssues() {
+        return issues;
+    }
+
+    public Party getInsurance() {
+        return insurance;
     }
 
     @Override
     public List<AbstractParty> getParticipants() {
-        return Arrays.asList();
+        return Arrays.asList(this.getIssues(), this.getInsurance());
+    }
+
+    public List<PublicKey> getParticipantKeys() {
+        return getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList());
+    }
+
+    @NotNull
+    @Override
+    public UniqueIdentifier getLinearId() {
+        return new UniqueIdentifier(objectID);
     }
 }
