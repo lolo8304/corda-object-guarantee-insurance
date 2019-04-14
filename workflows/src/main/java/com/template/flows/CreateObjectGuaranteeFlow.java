@@ -99,32 +99,35 @@ public class CreateObjectGuaranteeFlow {
         @Suspendable
         @Override
         public Void call() throws FlowException {
+
+            /*
+                implement a behavior on the insurance side to accept only prices of object >= 100 and <= 1000
+                this implementation can be overridden later per node
+             */
+            class SignTxFlow extends SignTransactionFlow {
+                private SignTxFlow(FlowSession otherPartySession) {
+                    super(otherPartySession);
+                }
+
+                @Override
+                protected void checkTransaction(SignedTransaction stx) {
+                    requireThat(require -> {
+                        ContractState output = stx.getTx().getOutputs().get(0).getData();
+                        require.using("This must be an guarantee transaction.", output instanceof ObjectQuaranteeState);
+                        ObjectQuaranteeState object = (ObjectQuaranteeState) output;
+                        require.using("The price of the object is too low. Only accepting values >= 100.", object.getPrice() >= 100);
+                        require.using("The price of the object is too hight. Only accepting values <= 10000.", object.getPrice() < 1000);
+                        return null;
+                    });
+                }
+            }
+
+
             SecureHash expectedTxId = subFlow(new SignTxFlow(otherPartySession)).getId();
             subFlow(new ReceiveFinalityFlow(otherPartySession, expectedTxId));
             return null;
         }
     }
 
-    /*
-        implement a behavior on the insurance side to accept only prices of object >= 100 and <= 1000
-        this implementation can be overridden later per node
-     */
 
-    public static class SignTxFlow extends SignTransactionFlow {
-        private SignTxFlow(FlowSession otherPartySession) {
-            super(otherPartySession);
-        }
-
-        @Override
-        protected void checkTransaction(SignedTransaction stx) {
-            requireThat(require -> {
-                ContractState output = stx.getTx().getOutputs().get(0).getData();
-                require.using("This must be an guarantee transaction.", output instanceof ObjectQuaranteeState);
-                ObjectQuaranteeState object = (ObjectQuaranteeState) output;
-                require.using("The price of the object is too low. Only accepting values >= 100.", object.getPrice() >= 100);
-                require.using("The price of the object is too hight. Only accepting values <= 1000.", object.getPrice() < 1000);
-                return null;
-            });
-        }
-    }
 }
