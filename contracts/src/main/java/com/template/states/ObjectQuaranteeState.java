@@ -25,7 +25,7 @@ public class ObjectQuaranteeState implements LinearState {
     private Instant purchaseDate;
     private int price;
     private int additionalYears;
-    private Party issues;
+    private Party issuer;
     private Party insurance;
 
     public ObjectQuaranteeState(String objectID, String title, Instant purchaseDate, int price, int additionalYears, Party issues, Party insurance) {
@@ -35,7 +35,7 @@ public class ObjectQuaranteeState implements LinearState {
         this.purchaseDate = purchaseDate;
         this.price = price;
         this.additionalYears = additionalYears;
-        this.issues = issues;
+        this.issuer = issues;
         this.insurance = insurance;
     }
 
@@ -60,8 +60,8 @@ public class ObjectQuaranteeState implements LinearState {
         return additionalYears;
     }
 
-    public Party getIssues() {
-        return issues;
+    public Party getIssuer() {
+        return issuer;
     }
 
     public Party getInsurance() {
@@ -70,7 +70,7 @@ public class ObjectQuaranteeState implements LinearState {
 
     @Override
     public List<AbstractParty> getParticipants() {
-        return Arrays.asList(this.getIssues(), this.getInsurance());
+        return Arrays.asList(this.getIssuer(), this.getInsurance());
     }
 
     public List<PublicKey> getParticipantKeys() {
