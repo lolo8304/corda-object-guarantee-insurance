@@ -88,6 +88,7 @@ public class CreateObjectGuaranteeFlow {
     }
 
     // Replace Responder's definition with:
+    @InitiatingFlow(version = 2)
     @InitiatedBy(CreateObjectGuaranteeFlow.Initiator.class)
     public static class Responder extends FlowLogic<Void> {
         private final FlowSession otherPartySession;
@@ -121,10 +122,12 @@ public class CreateObjectGuaranteeFlow {
                     });
                 }
             }
-
-
-            SecureHash expectedTxId = subFlow(new SignTxFlow(otherPartySession)).getId();
-            subFlow(new ReceiveFinalityFlow(otherPartySession, expectedTxId));
+            if (otherPartySession.getCounterpartyFlowInfo().getFlowVersion() >= 2) {
+                SecureHash expectedTxId = subFlow(new SignTxFlow(otherPartySession)).getId();
+                subFlow(new ReceiveFinalityFlow(otherPartySession, expectedTxId));
+            } else {
+                subFlow(new SignTxFlow(otherPartySession)).getId();
+            }
             return null;
         }
     }

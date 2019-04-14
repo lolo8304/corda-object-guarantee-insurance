@@ -2,7 +2,6 @@ package com.template;
 
 import com.template.contracts.ObjectGuaranteeContract;
 import com.template.states.ObjectQuaranteeState;
-import net.corda.testing.node.MockServices;
 import org.junit.Before;
 import org.junit.Test;
 
