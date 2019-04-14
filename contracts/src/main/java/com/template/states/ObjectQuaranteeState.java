@@ -6,6 +6,7 @@ import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
+import net.corda.core.serialization.CordaSerializable;
 import org.jetbrains.annotations.NotNull;
 
 import java.security.PublicKey;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 // * State *
 // *********
 @BelongsToContract(ObjectGuaranteeContract.class)
+@CordaSerializable
 public class ObjectQuaranteeState implements LinearState {
 
     private final String objectID;
@@ -28,14 +30,14 @@ public class ObjectQuaranteeState implements LinearState {
     private Party issuer;
     private Party insurance;
 
-    public ObjectQuaranteeState(String objectID, String title, Instant purchaseDate, int price, int additionalYears, Party issues, Party insurance) {
+    public ObjectQuaranteeState(String objectID, String title, Instant purchaseDate, int price, int additionalYears, Party issuer, Party insurance) {
 
         this.objectID = objectID;
         this.title = title;
         this.purchaseDate = purchaseDate;
         this.price = price;
         this.additionalYears = additionalYears;
-        this.issuer = issues;
+        this.issuer = issuer;
         this.insurance = insurance;
     }
 

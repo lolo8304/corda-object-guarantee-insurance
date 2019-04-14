@@ -52,15 +52,15 @@ public class ObjectGuaranteeContract implements Contract {
                     .output().output(ObjectQuaranteeState.class).object();
             req.using(
                     "issuer must be different than insurer",
-                    object.getIssuer().equals(object.getInsurance()));
+                    !object.getIssuer().equals(object.getInsurance()));
             req.using(
                     "objectID must be filled",
-                    object.getObjectID() != null && object.getObjectID().isEmpty());
+                    object.getObjectID() != null && !object.getObjectID().isEmpty());
             req.using(
                     "title must be filled",
                     object.getTitle() != null && !object.getTitle().isEmpty());
             req.using(
-                    "purchaseDate  in the past or today",
+                    "purchaseDate must be in the past or today",
                     object.getPurchaseDate().isBefore(Instant.now()));
             req.using(
                     "price must be > 0",
