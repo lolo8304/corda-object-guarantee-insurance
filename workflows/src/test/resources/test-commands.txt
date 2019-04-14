@@ -1,0 +1,22 @@
+
+example issue new object guarantee insurance
+------------------------------
+flow start CreateObjectGuaranteeFlow$Initiator \
+    objectID: "4711", title: "iPhoneX", purchaseDate: "2019-03-01T00:00:00Z", \
+    price: 1200, additionalYears: 2, insuranceParty: Insurance
+
+flow start CreateObjectGuaranteeFlow$Initiator \
+    objectID: "0815", title: "MacBookPro 2.6GHz", purchaseDate: "2019-02-01T00:00:00Z", \
+    price: 4200, additionalYears: 1, insuranceParty: Insurance
+
+run vaultQuery contractStateType: com.template.states.ObjectQuaranteeState
+
+
+show all transactions
+------------------------------
+
+run vaultQuery contractStateType: com.template.states.ObjectQuaranteeState
+
+
+
+

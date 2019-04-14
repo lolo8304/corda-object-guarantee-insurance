@@ -22,10 +22,10 @@ public class NodeDriver {
         driver(new DriverParameters().withStartNodesInProcess(true).withWaitForAllNodesToFinish(true), dsl -> {
                     try {
                         dsl.startNode(new NodeParameters()
-                                .withProvidedName(new CordaX500Name("PartyA", "London", "GB"))
+                                .withProvidedName(new CordaX500Name("OnlineShop", "Zurich", "CH"))
                                 .withRpcUsers(rpcUsers)).get();
                         dsl.startNode(new NodeParameters()
-                                .withProvidedName(new CordaX500Name("PartyB", "New York", "US"))
+                                .withProvidedName(new CordaX500Name("Insurance", "Winterthur", "CH"))
                                 .withRpcUsers(rpcUsers)).get();
                     } catch (Throwable e) {
                         System.err.println("Encountered exception in node startup: " + e.getMessage());

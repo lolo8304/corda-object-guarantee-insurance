@@ -16,7 +16,7 @@ public class CreateObjectGuaranteeFlow {
 
     @InitiatingFlow
     @StartableByRPC
-    public class Initiator extends FlowLogic<Void> {
+    public static class Initiator extends FlowLogic<Void> {
 
         /**
          * The progress tracker provides checkpoints indicating the progress of the flow to observers.
@@ -46,6 +46,7 @@ public class CreateObjectGuaranteeFlow {
         }
 
         @Override
+        @Suspendable
         public Void call() throws FlowException {
             // We retrieve the notary identity from the network map.
             Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
@@ -75,8 +76,8 @@ public class CreateObjectGuaranteeFlow {
     }
 
     // Replace Responder's definition with:
-    @InitiatedBy(Initiator.class)
-    public class Responder extends FlowLogic<Void> {
+    @InitiatedBy(CreateObjectGuaranteeFlow.Initiator.class)
+    public static class Responder extends FlowLogic<Void> {
         private final FlowSession otherPartySession;
 
         public Responder(FlowSession otherPartySession) {
