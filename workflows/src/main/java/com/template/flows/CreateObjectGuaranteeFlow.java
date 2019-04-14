@@ -14,12 +14,13 @@ import net.corda.core.utilities.ProgressTracker;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static net.corda.core.contracts.ContractsDSL.requireThat;
 
 public class CreateObjectGuaranteeFlow {
 
-    @InitiatingFlow
+    @InitiatingFlow(version = 2)
     @StartableByRPC
     public static class Initiator extends FlowLogic<Void> {
 
@@ -81,14 +82,17 @@ public class CreateObjectGuaranteeFlow {
                     signedTx, Arrays.asList(otherPartySession), CollectSignaturesFlow.tracker()));
 
             // We finalise the transaction and then send it to the counterparty.
-            subFlow(new FinalityFlow(fullySignedTx, otherPartySession));
+            if (otherPartySession.getCounterpartyFlowInfo().getFlowVersion() == 1) {
+                subFlow(new FinalityFlow(fullySignedTx, Collections.emptyList()));
+            } else {
+                subFlow(new FinalityFlow(fullySignedTx, otherPartySession));
+            }
 
             return null;
         }
     }
 
     // Replace Responder's definition with:
-    @InitiatingFlow(version = 2)
     @InitiatedBy(CreateObjectGuaranteeFlow.Initiator.class)
     public static class Responder extends FlowLogic<Void> {
         private final FlowSession otherPartySession;
@@ -110,6 +114,7 @@ public class CreateObjectGuaranteeFlow {
                     super(otherPartySession);
                 }
 
+                @Suspendable
                 @Override
                 protected void checkTransaction(SignedTransaction stx) {
                     requireThat(require -> {
@@ -126,7 +131,7 @@ public class CreateObjectGuaranteeFlow {
                 SecureHash expectedTxId = subFlow(new SignTxFlow(otherPartySession)).getId();
                 subFlow(new ReceiveFinalityFlow(otherPartySession, expectedTxId));
             } else {
-                subFlow(new SignTxFlow(otherPartySession)).getId();
+                subFlow(new SignTxFlow(otherPartySession));
             }
             return null;
         }

@@ -9,6 +9,13 @@ flow start CreateObjectGuaranteeFlow$Initiator \
     objectID: "0815", title: "MacBookPro 2.6GHz", purchaseDate: "2019-02-01T00:00:00Z", \
     price: 4200, additionalYears: 1, insuranceParty: Insurance
 
+
+failed one
+flow start CreateObjectGuaranteeFlow$Initiator \
+    objectID: "0815", title: "MacBookPro 2.6GHz", purchaseDate: "2019-02-01T00:00:00Z", \
+    price: -1, additionalYears: 1, insuranceParty: Insurance
+
+
 run vaultQuery contractStateType: com.template.states.ObjectQuaranteeState
 
 
