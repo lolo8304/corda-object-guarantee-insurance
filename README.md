@@ -4,6 +4,8 @@
 
 # CorDapp Template - Java
 
+<img src="https://travis-ci.org/lolo8304/corda-object-guarantee-insurance.svg?branch=master">
+
 Welcome to the Java CorDapp template. The CorDapp template is a stubbed-out CorDapp that you can use to bootstrap 
 your own CorDapps.
 
